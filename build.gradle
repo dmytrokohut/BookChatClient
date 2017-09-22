@@ -57,14 +57,14 @@ protobuf {
 sourceSets {
 	main {
 		java {
-			srcDir 'src/main/java/com/dkohut/bookchat/client/enity'
+			srcDir 'src/main/java/com/dkohut/bookchat/client/common/enity'
 		}
 	}
 }
 
 task cleanEntity {
 	doFirst {
-		delete("$projectDir/src/main/java/com/dkohut/bookchat/client/enity")
+		delete("$projectDir/src/main/java/com/dkohut/bookchat/client/common/enity")
 	}
 }
 

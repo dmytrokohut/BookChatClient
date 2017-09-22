@@ -1,0 +1,49 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+
+// Folder, that will contain generated files
+package com.dkohut.bookchat.client.common.entity;
+
+// Enum which contain instances for ResponseMessage
+enum ResponseEnum {
+	SUCCESS = 0;
+	ERROR = 1;
+}
+
+// Message for creating a class Book which will be used for objects
+// which will be containing info about book
+message Book {
+	int32 id = 1;
+	string title = 2;
+	string genre = 3;
+	string author = 4;
+	string publication_date = 5;
+	float price = 6; 
+}
+
+// Message from server which consist of info about success of operation
+message ResponseMessage {
+	ResponseEnum response = 1;
+}
+
+// Message sent to server with title of book for searching
+message SearchBookMessage {
+	string title = 1;
+}
+
+// Message sent to server for deleting book-object
+message DeleteBookMessage {
+	int32 id = 1;
+}
+
+service BookService {
+	// Method for adding new book
+	rpc createBook(Book) returns (ResponseMessage);
+	
+	// Method for searching existing book
+	rpc searchBook(SearchBookMessage) returns (Book);
+	
+	// Method for deleting existing book
+	rpc deleteBook(DeleteBookMessage) returns (ResponseMessage);
+}
