@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.BorderPane?>
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="415.0" prefWidth="530.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.dkohut.bookmarket.SampleController">
+   <center>
+      <VBox prefHeight="408.0" prefWidth="528.0" BorderPane.alignment="CENTER">
+         <children>
+            <TabPane minHeight="370.0" prefHeight="414.0" prefWidth="528.0" tabClosingPolicy="UNAVAILABLE">
+              <tabs>
+                <Tab text="Перегляд">
+                  <content>
+                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                           <children>
+                              <HBox layoutY="269.0" prefHeight="101.0" prefWidth="500.0" AnchorPane.bottomAnchor="15.0" AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="269.0">
+                                 <children>
+                                    <Button fx:id="readFileButton" alignment="CENTER" minHeight="40.0" minWidth="100.0" mnemonicParsing="false" onAction="#readFromFile" prefHeight="40.0" prefWidth="155.0" text="Зчитати">
+                                       <HBox.margin>
+                                          <Insets left="30.0" top="30.0" />
+                                       </HBox.margin>
+                                    </Button>
+                                    <Button fx:id="writeFile" alignment="CENTER" minHeight="40.0" minWidth="100.0" mnemonicParsing="false" onAction="#writeIntoFile" prefHeight="40.0" prefWidth="155.0" text="Записати">
+                                       <HBox.margin>
+                                          <Insets left="90.0" top="30.0" />
+                                       </HBox.margin>
+                                    </Button>
+                                 </children>
+                              </HBox>
+                              <TableView fx:id="tableBooks" layoutX="10.0" layoutY="14.0" prefHeight="254.0" prefWidth="505.0">
+                                <columns>
+                                  <TableColumn fx:id="idColumn" prefWidth="53.0" text="ID" />
+                                  <TableColumn fx:id="titleColumn" prefWidth="124.0" text="Назва" />
+                                    <TableColumn fx:id="authorColumn" prefWidth="89.0" text="Автор" />
+                                    <TableColumn fx:id="pubDateColumn" prefWidth="101.0" text="Дата публікації" />
+                                    <TableColumn fx:id="isRentColumn" prefWidth="58.0" text="Оренда" />
+                                    <TableColumn fx:id="priceColumn" prefWidth="79.0" text="Ціна" />
+                                </columns>
+                                 <contextMenu>
+                                    <ContextMenu>
+                                      <items>
+                                        <MenuItem fx:id="deleteItem" mnemonicParsing="false" onAction="#delete" text="Видалити вибраний об'єкт" />
+                                      </items>
+                                    </ContextMenu>
+                                 </contextMenu>
+                              </TableView>
+                           </children>
+                        </AnchorPane>
+                  </content>
+                </Tab>
+                <Tab text="Додати нову книгу">
+                     <content>
+                        <HBox minHeight="300.0" prefHeight="405.0" prefWidth="528.0">
+                           <children>
+                              <VBox minWidth="300.0" prefHeight="200.0" prefWidth="100.0">
+                                 <children>
+                                    <Label text="ID книги :">
+                                       <VBox.margin>
+                                          <Insets left="15.0" top="15.0" />
+                                       </VBox.margin>
+                                    </Label>
+                                    <TextField fx:id="idField" minHeight="25.0" prefHeight="25.0" prefWidth="125.0">
+                                       <VBox.margin>
+                                          <Insets left="15.0" right="5.0" top="5.0" />
+                                       </VBox.margin>
+                                    </TextField>
+                                    <Label text="Назва книги :">
+                                       <VBox.margin>
+                                          <Insets left="15.0" top="15.0" />
+                                       </VBox.margin>
+                                    </Label>
+                                    <TextField fx:id="titleField" minHeight="25.0">
+                                       <VBox.margin>
+                                          <Insets left="15.0" right="5.0" top="5.0" />
+                                       </VBox.margin>
+                                    </TextField>
+                                    <Label text="Автор книги :">
+                                       <VBox.margin>
+                                          <Insets left="15.0" top="15.0" />
+                                       </VBox.margin>
+                                    </Label>
+                                    <TextField fx:id="authorField">
+                                       <VBox.margin>
+                                          <Insets left="15.0" right="5.0" top="5.0" />
+                                       </VBox.margin>
+                                    </TextField>
+                                    <Label text="Дата публікації :">
+                                       <VBox.margin>
+                                          <Insets left="15.0" top="15.0" />
+                                       </VBox.margin>
+                                    </Label>
+                                    <TextField fx:id="pubDateField">
+                                       <VBox.margin>
+                                          <Insets left="15.0" right="5.0" top="5.0" />
+                                       </VBox.margin>
+                                    </TextField>
+                                    <Label text="Чи здається в оренду (0 - Ні,1 - Так) :">
+                                       <VBox.margin>
+                                          <Insets left="15.0" top="15.0" />
+                                       </VBox.margin>
+                                    </Label>
+                                    <TextField fx:id="isRentField">
+                                       <VBox.margin>
+                                          <Insets left="15.0" right="5.0" top="5.0" />
+                                       </VBox.margin>
+                                    </TextField>
+                                    <Label text="Ціна :">
+                                       <padding>
+                                          <Insets left="15.0" top="15.0" />
+                                       </padding>
+                                    </Label>
+                                    <TextField fx:id="priceField">
+                                       <VBox.margin>
+                                          <Insets left="15.0" right="5.0" top="5.0" />
+                                       </VBox.margin>
+                                    </TextField>
+                                 </children>
+                              </VBox>
+                              <VBox prefHeight="200.0" prefWidth="100.0">
+                                 <children>
+                                    <Button fx:id="clearButton" alignment="CENTER" minHeight="50.0" minWidth="150.0" mnemonicParsing="false" onAction="#clearFields" text="Очистити всі поля" textAlignment="CENTER">
+                                       <VBox.margin>
+                                          <Insets left="20.0" right="15.0" top="90.0" />
+                                       </VBox.margin>
+                                    </Button>
+                                    <Button fx:id="addBookButton" alignment="CENTER" minHeight="50.0" minWidth="150.0" mnemonicParsing="false" onAction="#addBook" text="Додати книгу">
+                                       <VBox.margin>
+                                          <Insets left="20.0" right="15.0" top="60.0" />
+                                       </VBox.margin>
+                                    </Button>
+                                 </children>
+                              </VBox>
+                           </children>
+                        </HBox>
+                     </content>
+                </Tab>
+              </tabs>
+            </TabPane>
+         </children>
+      </VBox>
+   </center>
+</BorderPane>

@@ -1,0 +1,8 @@
+### Custom ###
+.classpath
+bin/
+.gradle/
+gradle/
+.gitignore.swp
+.project
+.settings/
