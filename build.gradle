@@ -72,6 +72,6 @@ clean.dependsOn cleanEntity
 
 apply plugin: 'application'
 
-mainClassName = 'com.dkohut.bookchat.client.Main'
+mainClassName = 'com.dkohut.bookchat.client.Login'
 
 
