@@ -14,7 +14,6 @@ public class Login extends Application {
 		try {			
 			BorderPane root = (BorderPane)FXMLLoader.load(getClass().getClassLoader().getResource("fxmls/Login.fxml"));
 			Scene scene = new Scene(root,275,160);
-			// scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 			primaryStage.setScene(scene);
 			primaryStage.show();
 		} catch(Exception e) {
