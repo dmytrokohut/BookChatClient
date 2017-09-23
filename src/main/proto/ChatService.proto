@@ -3,7 +3,7 @@ syntax = "proto3";
 option java_multiple_files = true;
 
 // Folder, that will contain generated files
-package com.dkohut.bookchat.client.common.entity;
+package com.dkohut.bookchat.common.entity;
 
 // Message that represent request from client
 message ChatMessage {

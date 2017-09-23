@@ -6,7 +6,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.BorderPane?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="275.0" prefHeight="159.0" prefWidth="275.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="275.0" prefHeight="159.0" prefWidth="275.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.dkohut.bookchat.controllers.LoginController">
    <center>
       <VBox prefHeight="200.0" prefWidth="353.0" BorderPane.alignment="CENTER">
          <children>
@@ -22,12 +22,12 @@
             </TextField>
             <HBox prefHeight="58.0" prefWidth="275.0">
                <children>
-                  <Button fx:id="loginButton" mnemonicParsing="false" prefHeight="25.0" prefWidth="100.0" text="Log In">
+                  <Button fx:id="loginButton" mnemonicParsing="false" onAction="#loginInSystem" prefHeight="25.0" prefWidth="100.0" text="Log In">
                      <HBox.margin>
                         <Insets left="20.0" top="20.0" />
                      </HBox.margin>
                   </Button>
-                  <Button fx:id="registrationFormButton" mnemonicParsing="false" prefHeight="25.0" prefWidth="100.0" text="Registration">
+                  <Button fx:id="registrationFormButton" mnemonicParsing="false" onAction="#openRegistrationForm" prefHeight="25.0" prefWidth="100.0" text="Registration">
                      <HBox.margin>
                         <Insets left="30.0" top="20.0" />
                      </HBox.margin>

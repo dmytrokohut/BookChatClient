@@ -13,6 +13,7 @@ buildscript {
 repositories {
 	mavenCentral()
 	mavenLocal()
+	jcenter()
 }
 
 def grpcVersion = '1.6.1'
@@ -57,14 +58,14 @@ protobuf {
 sourceSets {
 	main {
 		java {
-			srcDir 'src/main/java/com/dkohut/bookchat/client/common/enity'
+			srcDir 'src/main/java/com/dkohut/bookchat/common/entity'
 		}
 	}
 }
 
 task cleanEntity {
 	doFirst {
-		delete("$projectDir/src/main/java/com/dkohut/bookchat/client/common/enity")
+		delete("$projectDir/src/main/java/com/dkohut/bookchat/common/entity")
 	}
 }
 
@@ -72,6 +73,6 @@ clean.dependsOn cleanEntity
 
 apply plugin: 'application'
 
-mainClassName = 'com.dkohut.bookchat.client.Login'
+mainClassName = 'com.dkohut.bookchat.Login'
 
 

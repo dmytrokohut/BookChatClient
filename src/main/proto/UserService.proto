@@ -5,7 +5,7 @@ option java_multiple_files = true;
 import "BookService.proto";
 
 // Folder, that will contain generated files
-package com.dkohut.bookchat.client.common.entity;
+package com.dkohut.bookchat.common.entity;
 
 enum AccessEnum {
 	ACCESS_GRANTED = 0;
@@ -38,5 +38,5 @@ service UserService {
 	rpc registration(User) returns (ResponseMessage);
 	
 	// Method for login an existing user
-	rpc login(LoginMessage) returns (AccessInfo);
+	rpc login(stream LoginMessage) returns (stream AccessInfo);
 }
