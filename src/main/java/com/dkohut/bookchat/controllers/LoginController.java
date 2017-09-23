@@ -1,5 +1,7 @@
 package com.dkohut.bookchat.controllers;
 
+import java.io.IOException;
+
 import com.dkohut.bookchat.common.entity.AccessEnum;
 import com.dkohut.bookchat.common.entity.AccessInfo;
 import com.dkohut.bookchat.common.entity.LoginMessage;
@@ -11,8 +13,12 @@ import io.grpc.stub.StreamObserver;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.BorderPane;
+import javafx.stage.Stage;
 
 public class LoginController {
 	
@@ -68,6 +74,26 @@ public class LoginController {
 	}
 	
 	public void openRegistrationForm(ActionEvent actionEvent) {
+		Stage stage = (Stage)registrationFormButton.getScene().getWindow();
+		stage.close();
 		
+		RegistrationController regController = new RegistrationController();
+		regController.showDialog(actionEvent);
 	}
+	
+
+	public void initDialog() {
+		Stage stage = new Stage();
+		BorderPane root;
+		try {
+			root = (BorderPane)FXMLLoader.load(getClass().getClassLoader().getResource("fxmls/Login.fxml"));
+			Scene scene = new Scene(root,275,160);
+			stage.setScene(scene);
+			stage.setTitle("BookChat Client");
+			stage.show();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
 }

@@ -26,7 +26,7 @@ public class Login extends Application {
 			primaryStage.show();
 		} catch (IOException e) {
 			e.printStackTrace();
-		}		
+		}
 	}
 	
 }
