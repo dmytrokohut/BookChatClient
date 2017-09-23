@@ -50,11 +50,11 @@ public class LoginController {
 			public void onNext(AccessInfo accessInfo) {
 				Platform.runLater(() -> {
 					if(accessInfo.getAccess().equals(AccessEnum.ACCESS_GRANTED)) {
-						loginLogField.setText("SUCCESS");
-						passwordLogField.setText("Your access allowed");
+						Stage stage = (Stage)registrationFormButton.getScene().getWindow();
+						stage.close();
 					} else {
-						loginLogField.setText("ERROR");
-						passwordLogField.setText("You don't have access");
+						loginLogField.setText("");
+						passwordLogField.setText("");
 					}
 				});							
 			}
