@@ -60,7 +60,11 @@ public class RegistrationController {
 				.build());
 		
 		if(response.getResponse().equals(ResponseEnum.SUCCESS)) {
-			loginRegField.setText("Success");
+			Stage stage = (Stage)registrationButton.getScene().getWindow();
+			stage.close();
+			
+			MainController controller = new MainController();
+			controller.showMainDialog();
 		} else {
 			loginRegField.setText("");
 			passwordRegField.setText("");

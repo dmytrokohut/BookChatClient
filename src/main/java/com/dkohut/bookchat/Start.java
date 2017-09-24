@@ -9,7 +9,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.fxml.FXMLLoader;
 
 
-public class Login extends Application {
+public class Start extends Application {
 
 	public static void main(String[] args) {
 		launch(args);

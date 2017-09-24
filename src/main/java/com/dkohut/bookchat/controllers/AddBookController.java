@@ -28,6 +28,9 @@ public class AddBookController {
 	
 	@FXML private Button addBookButton;
 	@FXML private Button cancelAddBookButton;
+	
+	
+	private MainController controller = new MainController();
 
 	public void showDialog() {
 		Stage stage = new Stage();
@@ -51,6 +54,7 @@ public class AddBookController {
 		BookServiceGrpc.BookServiceBlockingStub serverStub = BookServiceGrpc.newBlockingStub(channel);
 		
 		ResponseMessage response = serverStub.createBook(Book.newBuilder()
+				.setId(0)
 				.setTitle(newTitleField.getText())
 				.setGenre(newGenreField.getText())
 				.setAuthor(newAuthorField.getText())
@@ -61,6 +65,8 @@ public class AddBookController {
 		if(response.getResponse().equals(ResponseEnum.SUCCESS)) {
 			Stage stage = (Stage)cancelAddBookButton.getScene().getWindow();
 			stage.close();
+
+			controller.showMainDialog();
 		} else {
 			newTitleField.setText("");
 			newGenreField.setText("");

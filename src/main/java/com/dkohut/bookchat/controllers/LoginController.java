@@ -52,6 +52,9 @@ public class LoginController {
 					if(accessInfo.getAccess().equals(AccessEnum.ACCESS_GRANTED)) {
 						Stage stage = (Stage)registrationFormButton.getScene().getWindow();
 						stage.close();
+						
+						MainController controller = new MainController();
+						controller.showMainDialog();
 					} else {
 						loginLogField.setText("");
 						passwordLogField.setText("");
@@ -86,7 +89,7 @@ public class LoginController {
 		Stage stage = new Stage();
 		BorderPane root;
 		try {
-			root = (BorderPane)FXMLLoader.load(getClass().getClassLoader().getResource("fxmls/Login.fxml"));
+			root = (BorderPane)FXMLLoader.load(getClass().getClassLoader().getResource("fxmls/Start.fxml"));
 			Scene scene = new Scene(root,275,160);
 			stage.setScene(scene);
 			stage.setTitle("BookChat Client");
