@@ -63,8 +63,16 @@ public class RegistrationController {
 			Stage stage = (Stage)registrationButton.getScene().getWindow();
 			stage.close();
 			
+			LoginController.user.newBuilder()
+				.setLogin(loginRegField.getText())
+				.setPassword(passwordRegField.getText())
+				.setName(nameRegField.getText())
+				.setEmail(emaiRegField.getText())
+				.build();
+			
 			MainController controller = new MainController();
 			controller.showMainDialog();
+			
 		} else {
 			loginRegField.setText("");
 			passwordRegField.setText("");

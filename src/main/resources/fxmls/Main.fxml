@@ -50,24 +50,40 @@
             <content>
               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
-                        <TextField fx:id="bookSearchField" layoutX="10.0" layoutY="22.0" prefHeight="30.0" prefWidth="305.0" promptText="Enter name of book" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="200.0" AnchorPane.topAnchor="20.0" />
-                        <!-- <Button fx:id="bookSearchButton" layoutX="376.0" layoutY="21.0" mnemonicParsing="false" onAction="#bookSearch" prefHeight="30.0" prefWidth="100.0" text="Search" /> -->
-                        <TableView fx:id="tableViewBooks" layoutX="14.0" layoutY="76.0" prefHeight="276.0" prefWidth="483.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="70.0">
-                          <columns>
-                            <TableColumn fx:id="titleColumn" prefWidth="116.0" text="Title" />
-                            <TableColumn fx:id="genreColumn" prefWidth="92.0" text="Genre" />
-                              <TableColumn fx:id="authorColumn" prefWidth="110.0" text="Author" />
-                              <TableColumn fx:id="dateColumn" prefWidth="96.0" text="Date" />
-                              <TableColumn fx:id="priceColumn" prefWidth="83.0" text="Price" />
-                          </columns>
-                           <contextMenu>
-                              <ContextMenu>
-                                <items>
-                                  <MenuItem fx:id="deleteBook" mnemonicParsing="false" onAction="#delete" text="Delete" />
-                                </items>
-                              </ContextMenu>
-                           </contextMenu>
-                        </TableView>
+                        <VBox prefHeight="365.0" prefWidth="510.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
+                           <children>
+                              <HBox prefHeight="100.0" prefWidth="200.0">
+                                 <children>
+                                    <TextField fx:id="bookSearchField" prefHeight="30.0" prefWidth="305.0" promptText="Enter name of book">
+                                       <HBox.margin>
+                                          <Insets left="10.0" top="30.0" />
+                                       </HBox.margin>
+                                    </TextField>
+                                    <Button fx:id="bookSearch" mnemonicParsing="false" onAction="#search" prefHeight="30.0" prefWidth="113.0" text="Search">
+                                       <HBox.margin>
+                                          <Insets left="30.0" top="30.0" />
+                                       </HBox.margin>
+                                    </Button>
+                                 </children>
+                              </HBox>
+                              <TableView fx:id="tableViewBooks" prefHeight="252.0" prefWidth="496.0">
+                                <columns>
+                                  <TableColumn fx:id="titleColumn" prefWidth="116.0" text="Title" />
+                                  <TableColumn fx:id="genreColumn" prefWidth="92.0" text="Genre" />
+                                    <TableColumn fx:id="authorColumn" prefWidth="110.0" text="Author" />
+                                    <TableColumn fx:id="dateColumn" prefWidth="96.0" text="Date" />
+                                    <TableColumn fx:id="priceColumn" prefWidth="83.0" text="Price" />
+                                </columns>
+                                 <contextMenu>
+                                    <ContextMenu>
+                                      <items>
+                                        <MenuItem fx:id="deleteBook" mnemonicParsing="false" onAction="#delete" text="Delete" />
+                                      </items>
+                                    </ContextMenu>
+                                 </contextMenu>
+                              </TableView>
+                           </children>
+                        </VBox>
                      </children>
                   </AnchorPane>
             </content>

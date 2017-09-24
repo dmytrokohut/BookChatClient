@@ -2,15 +2,12 @@ package com.dkohut.bookchat.controllers;
 
 import java.io.IOException;
 
-import com.dkohut.bookchat.common.entity.AccessEnum;
-import com.dkohut.bookchat.common.entity.AccessInfo;
 import com.dkohut.bookchat.common.entity.LoginMessage;
+import com.dkohut.bookchat.common.entity.User;
 import com.dkohut.bookchat.common.entity.UserServiceGrpc;
 
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
-import io.grpc.stub.StreamObserver;
-import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -30,50 +27,40 @@ public class LoginController {
 	@FXML private Button loginButton;
 	@FXML private Button registrationFormButton;
 	
+	public static User user;
+	
+	
+	private static ManagedChannel CHANNEL = ManagedChannelBuilder.forAddress("127.0.0.1", 8081)
+			.usePlaintext(true)
+			.build();
+	
 
 	/**
 	 * This method used for send info to server for login
 	 * 
 	 * @param actionEvent
 	 */
-	public void loginInSystem(ActionEvent actionEvent) {	
+	public void loginInSystem(ActionEvent actionEvent) {			
 		
-		ManagedChannel channel = ManagedChannelBuilder.forAddress("127.0.0.1", 8081)
-				.usePlaintext(true)
-				.build();
+		UserServiceGrpc.UserServiceBlockingStub userService = UserServiceGrpc.newBlockingStub(CHANNEL);
 		
-		UserServiceGrpc.UserServiceStub userService = UserServiceGrpc.newStub(channel);
-		
-		StreamObserver<LoginMessage> outGoingLogin = userService.login(new StreamObserver<AccessInfo>() {
-
-			@Override
-			public void onNext(AccessInfo accessInfo) {
-				Platform.runLater(() -> {
-					if(accessInfo.getAccess().equals(AccessEnum.ACCESS_GRANTED)) {
-						Stage stage = (Stage)registrationFormButton.getScene().getWindow();
-						stage.close();
-						
-						MainController controller = new MainController();
-						controller.showMainDialog();
-					} else {
-						loginLogField.setText("");
-						passwordLogField.setText("");
-					}
-				});							
-			}
-
-			@Override
-			public void onError(Throwable throwable) {}
-			
-			@Override
-			public void onCompleted() {}
-			
-		});
-		
-		outGoingLogin.onNext(LoginMessage.newBuilder()
+		try {
+			user = userService.login(LoginMessage.newBuilder()
 				.setLogin(loginLogField.getText())
 				.setPassword(passwordLogField.getText())
 				.build());
+			
+			Stage stage = (Stage)loginButton.getScene().getWindow();
+			stage.close();
+				
+			MainController controller = new MainController();
+			controller.showMainDialog();
+			
+		} catch(RuntimeException e) {
+			loginLogField.setText("User not found");
+			passwordLogField.setText("Try again");
+		}
+		
 	}
 	
 	public void openRegistrationForm(ActionEvent actionEvent) {
@@ -89,7 +76,7 @@ public class LoginController {
 		Stage stage = new Stage();
 		BorderPane root;
 		try {
-			root = (BorderPane)FXMLLoader.load(getClass().getClassLoader().getResource("fxmls/Start.fxml"));
+			root = (BorderPane)FXMLLoader.load(getClass().getClassLoader().getResource("fxmls/Login.fxml"));
 			Scene scene = new Scene(root,275,160);
 			stage.setScene(scene);
 			stage.setTitle("BookChat Client");

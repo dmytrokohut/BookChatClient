@@ -7,16 +7,6 @@ import "BookService.proto";
 // Folder, that will contain generated files
 package com.dkohut.bookchat.common.entity;
 
-enum AccessEnum {
-	ACCESS_GRANTED = 0;
-	ACCESS_DENIED = 1;
-}
-
-// Message sent to client with info about access to system
-message AccessInfo {
-	AccessEnum access = 1;
-}
-
 // Message for creating a class User and for registration
 message User {
 	int32 id = 1;
@@ -38,5 +28,5 @@ service UserService {
 	rpc registration(User) returns (ResponseMessage);
 	
 	// Method for login an existing user
-	rpc login(stream LoginMessage) returns (stream AccessInfo);
+	rpc login(LoginMessage) returns (User);
 }

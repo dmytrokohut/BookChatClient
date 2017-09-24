@@ -26,7 +26,7 @@ public class Start extends Application {
 			primaryStage.show();
 		} catch (IOException e) {
 			e.printStackTrace();
-		}
+		}		
 	}
 	
 }

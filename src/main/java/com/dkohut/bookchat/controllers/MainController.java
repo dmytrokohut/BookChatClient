@@ -12,6 +12,8 @@ import com.dkohut.bookchat.common.entity.ResponseEnum;
 import com.dkohut.bookchat.common.entity.ResponseMessage;
 import com.dkohut.bookchat.common.entity.SearchBookMessage;
 
+import com.dkohut.bookchat.controllers.LoginController;
+
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import io.grpc.stub.StreamObserver;
@@ -40,7 +42,7 @@ public class MainController {
 	private ObservableList<String> messages = FXCollections.observableArrayList();
 	
 	// ListView
-	@FXML private ListView listViewMessages;
+	@FXML private ListView<String> listViewMessages;
 	
 	// Button
 	@FXML private Button sendButton;
@@ -48,7 +50,7 @@ public class MainController {
 	// TextField
 	@FXML private TextField messageField;
 	@FXML private TextField bookSearchField;
-	@FXML private TextField bookSearchButton;
+	@FXML private TextField bookSearch;
 	
 	// TableView
 	@FXML private TableView<Book> tableViewBooks;
@@ -61,18 +63,18 @@ public class MainController {
 	@FXML private TableColumn<Book, Float> priceColumn;
 	
 	
+	
 	// Creating channel to server
 	private static ManagedChannel CHANNEL = ManagedChannelBuilder.forAddress("127.0.0.1", 8081)
 						.usePlaintext(true)
-						.build();	
+						.build();
+	
+	BookServiceGrpc.BookServiceBlockingStub bookService = BookServiceGrpc.newBlockingStub(CHANNEL);	
 	
 	ChatServiceGrpc.ChatServiceStub chatService = ChatServiceGrpc.newStub(CHANNEL);
 	
-	BookServiceGrpc.BookServiceBlockingStub bookService = BookServiceGrpc.newBlockingStub(CHANNEL);
-	
 	// Method that send message to server
-	public void sendMail() {
-		listViewMessages.setItems(messages);		
+	public void sendMail() {	
 		
 		StreamObserver<ChatMessage> server = chatService.chat(new StreamObserver<ChatMessageFromServer>() {
 
@@ -89,12 +91,14 @@ public class MainController {
 				});			
 			}
 			
-		});
+		});		
 		
 		server.onNext(ChatMessage.newBuilder()
-				.setName("")
+				.setName(LoginController.user.getName())
 				.setMessage(messageField.getText())
 				.build());
+		
+		listViewMessages.setItems(messages);
 	}
 	
 	
@@ -116,7 +120,7 @@ public class MainController {
 	
 	
 	// Method that display Main form
-	public void showMainDialog() {
+	public void showMainDialog() {		
 		Stage stage = new Stage();
 		BorderPane pane;
 		try {			
@@ -128,11 +132,11 @@ public class MainController {
 			stage.show();
 		} catch (IOException | NullPointerException e) {
 			e.printStackTrace();
-		}
+		}			
 	}
 	
 	// Method for book searching
-	public void bookSearch() {
+	public void search(ActionEvent actionEvent) {
 		Book book = bookService.searchBook(SearchBookMessage.newBuilder()
 				.setTitle(bookSearchField.getText())
 				.build());
@@ -161,10 +165,10 @@ public class MainController {
 		ResponseMessage response = bookService.deleteBook(DeleteBookMessage.newBuilder()
 				.setId(selectedBook.getId())
 				.build());
+		
 		if(response.getResponse().equals(ResponseEnum.SUCCESS)) {
 			bookList.remove(selectedBook);
-		}
-		
+		}		
 	}
 	
 }
