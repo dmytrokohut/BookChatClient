@@ -1,0 +1,32 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+
+import "BookService.proto";
+
+// Folder, that will contain generated files
+package com.dkohut.bookchat.common.entity;
+
+// Message for creating a class User and for registration
+message User {
+	int32 id = 1;
+	string login = 2;
+	string password = 3;
+	string name = 4;
+	string email = 5;
+}
+
+// Message sent to server with info about user for login
+message LoginMessage {
+	string login = 1;
+	string password = 2;
+}
+
+// Service that controll activity related to user
+service UserService {
+	// Method for registration new user in the system
+	rpc registration(User) returns (ResponseMessage);
+	
+	// Method for login an existing user
+	rpc login(LoginMessage) returns (User);
+}

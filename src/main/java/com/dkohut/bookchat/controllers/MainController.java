@@ -1,6 +1,7 @@
 package com.dkohut.bookchat.controllers;
 
 import java.io.IOException;
+import java.util.logging.Logger;
 
 import com.dkohut.bookchat.common.entity.Book;
 import com.dkohut.bookchat.common.entity.BookServiceGrpc;
@@ -35,22 +36,20 @@ import javafx.stage.Stage;
 
 public class MainController {
 	
-	// List for TableView
+	// List for TableView and ListView
 	private ObservableList<Book> bookList = FXCollections.observableArrayList();
-	
-	// List for ListView tool
 	private ObservableList<String> messages = FXCollections.observableArrayList();
 	
 	// ListView
 	@FXML private ListView<String> listViewMessages;
 	
 	// Button
-	@FXML private Button sendButton;
+	@FXML private Button sentMessageButton;
+	@FXML private Button bookSearch;
 	
 	// TextField
 	@FXML private TextField messageField;
 	@FXML private TextField bookSearchField;
-	@FXML private TextField bookSearch;
 	
 	// TableView
 	@FXML private TableView<Book> tableViewBooks;
@@ -63,91 +62,35 @@ public class MainController {
 	@FXML private TableColumn<Book, Float> priceColumn;
 	
 	
+	private static final Logger LOGGER = Logger.getLogger(MainController.class.getName());
+	
 	
 	// Creating channel to server
 	private static ManagedChannel CHANNEL = ManagedChannelBuilder.forAddress("127.0.0.1", 8081)
 						.usePlaintext(true)
 						.build();
 	
+	// Service connection's
+	ChatServiceGrpc.ChatServiceStub chatService = ChatServiceGrpc.newStub(CHANNEL);	
 	BookServiceGrpc.BookServiceBlockingStub bookService = BookServiceGrpc.newBlockingStub(CHANNEL);	
 	
-	ChatServiceGrpc.ChatServiceStub chatService = ChatServiceGrpc.newStub(CHANNEL);
-	
-	// Method that send message to server
-	public void sendMail() {	
-		
-		StreamObserver<ChatMessage> server = chatService.chat(new StreamObserver<ChatMessageFromServer>() {
+	private StreamObserver<ChatMessage> serverChat = chatService.chat(new StreamObserver<ChatMessageFromServer>() {
 
-			@Override
-			public void onCompleted() {}
+		@Override
+		public void onCompleted() {}
 
-			@Override
-			public void onError(Throwable throwable) {}
+		@Override
+		public void onError(Throwable throwable) {}
 
-			@Override
-			public void onNext(ChatMessageFromServer chatMessageFromServer) {
-				Platform.runLater(() -> {
-					messages.add(chatMessageFromServer.getName() + ": " + chatMessageFromServer.getMessage());
-				});			
-			}
-			
-		});		
-		
-		server.onNext(ChatMessage.newBuilder()
-				.setName(LoginController.user.getName())
-				.setMessage(messageField.getText())
-				.build());
-		
-		listViewMessages.setItems(messages);
-	}
-	
-	
-	// Method that open form for adding new book
-	public void addBook() {
-		Stage stage = new Stage();
-		BorderPane root;
-		try {
-			root = (BorderPane)FXMLLoader.load(getClass().getClassLoader().getResource("fxmls/AddBook.fxml"));
-			Scene scene = new Scene(root,275,275);
-			stage.setScene(scene);
-			stage.setTitle("BookChat Client");
-			stage.setResizable(false);
-			stage.show();
-		} catch (IOException | NullPointerException e) {
-			e.printStackTrace();
+		@Override
+		public void onNext(ChatMessageFromServer chatMessageFromServer) {
+			Platform.runLater(() -> {
+				messages.add(chatMessageFromServer.getName() + ": " + chatMessageFromServer.getMessage());
+			});			
 		}
-	}
-	
-	
-	// Method that display Main form
-	public void showMainDialog() {		
-		Stage stage = new Stage();
-		BorderPane pane;
-		try {			
-			pane = (BorderPane)FXMLLoader.load(getClass().getClassLoader().getResource("fxmls/Main.fxml"));
-			Scene scene = new Scene(pane,516,437);
-			stage.setScene(scene);
-			stage.setTitle("BookChat Client");
-			stage.setResizable(false);
-			stage.show();
-		} catch (IOException | NullPointerException e) {
-			e.printStackTrace();
-		}			
-	}
-	
-	// Method for book searching
-	public void search(ActionEvent actionEvent) {
-		Book book = bookService.searchBook(SearchBookMessage.newBuilder()
-				.setTitle(bookSearchField.getText())
-				.build());
 		
-		if(book.getId() == 0 && book.getTitle().equals("Not Found")) {
-			bookSearchField.setText("Book with such title doesn't exists");
-		} else {
-			bookList.add(book);
-			setRecordsTable();
-		}
-	}
+	});
+	
 	
 	private void setRecordsTable() {		
 		titleColumn.setCellValueFactory(new PropertyValueFactory<Book, String>("title"));
@@ -159,16 +102,97 @@ public class MainController {
 		tableViewBooks.setItems(bookList);
 	}
 	
-	public void delete(ActionEvent actionEvent) {
-		Book selectedBook = (Book) tableViewBooks.getSelectionModel().getSelectedItem();
+	/**
+	 * This method send message to server
+	 * 
+	 * @param actionEvent
+	 */
+	public void sendMail(ActionEvent actionEvent) {	
 		
-		ResponseMessage response = bookService.deleteBook(DeleteBookMessage.newBuilder()
+		listViewMessages.setItems(messages);
+		
+		serverChat.onNext(ChatMessage.newBuilder()
+				.setName(LoginController.getUserName())
+				.setMessage(messageField.getText())
+				.build());		
+		
+	}
+	
+	
+	/**
+	 * This method sent request to open AddBook form
+	 */
+	public void addBook(ActionEvent actionEvent) {
+		AddBookController addBookController = new AddBookController();
+		
+		addBookController.showDialog();
+	}
+	
+	
+	/**
+	 * This method open Main form
+	 */
+	public void showDialog() {		
+		Stage stage = new Stage();
+		BorderPane pane;
+		try {			
+			pane = (BorderPane)FXMLLoader.load(getClass().getClassLoader().getResource("fxmls/Main.fxml"));
+			Scene scene = new Scene(pane,516,437);
+			stage.setScene(scene);
+			stage.setTitle("BookChat Client");
+			stage.setResizable(false);
+			stage.show();				
+			
+		} catch (IOException | NullPointerException e) {
+			LOGGER.info(e.getMessage());
+		}			
+	}
+	
+
+	/**
+	 * This method sent message to server for searching of book by given title
+	 * 
+	 * @param actionEvent
+	 */
+	public void search(ActionEvent actionEvent) {
+		
+		try {
+			Book book = bookService.searchBook(SearchBookMessage.newBuilder()
+				.setTitle(bookSearchField.getText())
+				.build());
+		
+			bookList.add(book);
+			setRecordsTable();
+			
+		} catch(RuntimeException e) {
+			LOGGER.info(e.getMessage());
+			
+			bookSearchField.setText("");
+			bookSearchField.setPromptText("Book was not found");
+		}
+	}
+	
+	/**
+	 * This method sent info to server to delete book with given title
+	 * 
+	 * @param actionEvent
+	 * @throws NullPointerException
+	 */
+	public void delete(ActionEvent actionEvent) throws NullPointerException {
+		
+		try {
+			Book selectedBook = (Book) tableViewBooks.getSelectionModel().getSelectedItem();
+		
+			ResponseMessage response = bookService.deleteBook(DeleteBookMessage.newBuilder()
 				.setId(selectedBook.getId())
 				.build());
 		
-		if(response.getResponse().equals(ResponseEnum.SUCCESS)) {
-			bookList.remove(selectedBook);
-		}		
+			if(response.equals(ResponseEnum.SUCCESS))
+				bookList.remove(selectedBook);
+			
+		} catch(RuntimeException e) {
+			LOGGER.info(e.getMessage());
+		}
 	}
 	
 }

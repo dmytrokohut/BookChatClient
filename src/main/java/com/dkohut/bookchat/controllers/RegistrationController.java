@@ -1,8 +1,8 @@
 package com.dkohut.bookchat.controllers;
 
 import java.io.IOException;
+import java.util.logging.Logger;
 
-import com.dkohut.bookchat.common.entity.ResponseEnum;
 import com.dkohut.bookchat.common.entity.ResponseMessage;
 import com.dkohut.bookchat.common.entity.User;
 import com.dkohut.bookchat.common.entity.UserServiceGrpc;
@@ -29,6 +29,8 @@ public class RegistrationController {
 	@FXML private Button cancelRegButton;
 	
 	
+	private static final Logger LOGGER = Logger.getLogger(RegistrationController.class.getName());
+	
 	
 	public void showDialog(ActionEvent actionEvent) {		
 		try {
@@ -40,8 +42,8 @@ public class RegistrationController {
 			primaryStage.setResizable(false);
 			primaryStage.show();
 			
-		} catch (IOException e) {
-			e.printStackTrace();
+		} catch (IOException | RuntimeException e) {
+			LOGGER.info(e.getMessage());
 		}
 	}
 	
@@ -50,43 +52,47 @@ public class RegistrationController {
 				.usePlaintext(true)
 				.build();
 		
-		UserServiceGrpc.UserServiceBlockingStub serverStub = UserServiceGrpc.newBlockingStub(channel);
+		UserServiceGrpc.UserServiceBlockingStub serverStub = UserServiceGrpc.newBlockingStub(channel);		
 		
-		ResponseMessage response = serverStub.registration(User.newBuilder()
-				.setLogin(loginRegField.getText())
-				.setPassword(passwordRegField.getText())
-				.setName(nameRegField.getText())
-				.setEmail(emaiRegField.getText())
-				.build());
-		
-		if(response.getResponse().equals(ResponseEnum.SUCCESS)) {
+		try {			
+			ResponseMessage response = serverStub.registration(User.newBuilder()
+					.setLogin(loginRegField.getText())
+					.setPassword(passwordRegField.getText())
+					.setName(nameRegField.getText())
+					.setEmail(emaiRegField.getText())
+					.build());
+			
 			Stage stage = (Stage)registrationButton.getScene().getWindow();
 			stage.close();
 			
-			LoginController.user.newBuilder()
-				.setLogin(loginRegField.getText())
-				.setPassword(passwordRegField.getText())
-				.setName(nameRegField.getText())
-				.setEmail(emaiRegField.getText())
-				.build();
+			LoginController.initUser(loginRegField.getText(), passwordRegField.getText(),
+					nameRegField.getText(), emaiRegField.getText());
 			
 			MainController controller = new MainController();
-			controller.showMainDialog();
+			controller.showDialog();
 			
-		} else {
+		} catch(RuntimeException e) {			
+			LOGGER.info(e.getMessage());
+			
 			loginRegField.setText("");
 			passwordRegField.setText("");
 			nameRegField.setText("");
 			emaiRegField.setText("");
 		}
+		
 	}
 	
+	/**
+	 * This method sent request to open Login form and closes current form
+	 * 
+	 * @param actionEvent
+	 */
 	public void cancelRegister(ActionEvent actionEvent) {
 		Stage stage = (Stage)cancelRegButton.getScene().getWindow();
 		stage.close();
 		
-		LoginController controller = new LoginController();
-		controller.initDialog();
+		LoginController loginController = new LoginController();
+		loginController.showDialog();
 	}
 	
 }

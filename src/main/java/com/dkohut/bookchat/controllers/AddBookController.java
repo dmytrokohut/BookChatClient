@@ -1,6 +1,7 @@
 package com.dkohut.bookchat.controllers;
 
 import java.io.IOException;
+import java.util.logging.Logger;
 
 import com.dkohut.bookchat.common.entity.Book;
 import com.dkohut.bookchat.common.entity.BookServiceGrpc;
@@ -20,54 +21,72 @@ import javafx.stage.Stage;
 
 public class AddBookController {
 	
+	// TextField's
 	@FXML private TextField newTitleField;
 	@FXML private TextField newGenreField;
 	@FXML private TextField newAuthorField;
 	@FXML private TextField newPubDateField;
 	@FXML private TextField newPriceField;
 	
+	// Button's
 	@FXML private Button addBookButton;
 	@FXML private Button cancelAddBookButton;
 	
+	private static final Logger LOGGER = Logger.getLogger(AddBookController.class.getName());
 	
-	private MainController controller = new MainController();
-
+	
+	private static ManagedChannel CHANNEL = ManagedChannelBuilder.forAddress("127.0.0.1", 8081)
+			.usePlaintext(true)
+			.build();
+	
+	
+	/**
+	 * This method open AddBook form
+	 */
 	public void showDialog() {
 		Stage stage = new Stage();
 		BorderPane root;
+		
 		try {
 			root = (BorderPane)FXMLLoader.load(getClass().getClassLoader().getResource("fxmls/AddBook.fxml"));
 			Scene scene = new Scene(root,275,245);
 			stage.setScene(scene);
 			stage.setTitle("BookChat Client");
 			stage.show();
+			
 		} catch (IOException e) {
-			e.printStackTrace();
+			LOGGER.info(e.getMessage());
 		}
 	}
 	
-	public void addBook(ActionEvent actionEvent) {
-		ManagedChannel channel = ManagedChannelBuilder.forAddress("127.0.0.1", 8081)
-				.usePlaintext(true)
-				.build();
+	
+	/**
+	 * This method sent message to server to create new book in database
+	 * 
+	 * @param actionEvent
+	 */
+	public void addBook(ActionEvent actionEvent) {		
 		
-		BookServiceGrpc.BookServiceBlockingStub serverStub = BookServiceGrpc.newBlockingStub(channel);
+		BookServiceGrpc.BookServiceBlockingStub serverStub = BookServiceGrpc.newBlockingStub(CHANNEL);
 		
-		ResponseMessage response = serverStub.createBook(Book.newBuilder()
-				.setId(0)
-				.setTitle(newTitleField.getText())
-				.setGenre(newGenreField.getText())
-				.setAuthor(newAuthorField.getText())
-				.setPublicationDate(newPubDateField.getText())
-				.setPrice(new Float(newPriceField.getText()))
-				.build());
-		
-		if(response.getResponse().equals(ResponseEnum.SUCCESS)) {
-			Stage stage = (Stage)cancelAddBookButton.getScene().getWindow();
-			stage.close();
-
-			controller.showMainDialog();
-		} else {
+		try {			
+			ResponseMessage response = serverStub.createBook(Book.newBuilder()
+					.setTitle(newTitleField.getText())
+					.setGenre(newGenreField.getText())
+					.setAuthor(newAuthorField.getText())
+					.setPublicationDate(newPubDateField.getText())
+					.setPrice(new Float(newPriceField.getText()))
+					.build());
+			
+			if(response.getResponse().equals(ResponseEnum.SUCCESS)) {
+				Stage stage = (Stage)cancelAddBookButton.getScene().getWindow();
+				stage.close();
+				
+				MainController mainController = new MainController();
+				mainController.showDialog();
+			}			
+			
+		} catch(RuntimeException e) {
 			newTitleField.setText("");
 			newGenreField.setText("");
 			newAuthorField.setText("");
@@ -77,6 +96,11 @@ public class AddBookController {
 		
 	}
 	
+	/**
+	 * This method close current form
+	 * 
+	 * @param actionEvent
+	 */
 	public void cancelAddBook(ActionEvent actionEvent) {
 		Stage stage = (Stage)cancelAddBookButton.getScene().getWindow();
 		stage.close();

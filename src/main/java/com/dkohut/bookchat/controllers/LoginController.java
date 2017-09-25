@@ -1,6 +1,7 @@
 package com.dkohut.bookchat.controllers;
 
 import java.io.IOException;
+import java.util.logging.Logger;
 
 import com.dkohut.bookchat.common.entity.LoginMessage;
 import com.dkohut.bookchat.common.entity.User;
@@ -27,22 +28,27 @@ public class LoginController {
 	@FXML private Button loginButton;
 	@FXML private Button registrationFormButton;
 	
-	public static User user;
+	private static final Logger LOGGER = Logger.getLogger(LoginController.class.getName());
 	
 	
+	// User type 
+	private static User user;
+	
+	// Channel to server
 	private static ManagedChannel CHANNEL = ManagedChannelBuilder.forAddress("127.0.0.1", 8081)
 			.usePlaintext(true)
 			.build();
 	
+	// Connection to UserService
+	UserServiceGrpc.UserServiceBlockingStub userService = UserServiceGrpc.newBlockingStub(CHANNEL);
 
+	
 	/**
 	 * This method used for send info to server for login
 	 * 
 	 * @param actionEvent
 	 */
-	public void loginInSystem(ActionEvent actionEvent) {			
-		
-		UserServiceGrpc.UserServiceBlockingStub userService = UserServiceGrpc.newBlockingStub(CHANNEL);
+	public void login(ActionEvent actionEvent) {			
 		
 		try {
 			user = userService.login(LoginMessage.newBuilder()
@@ -54,15 +60,23 @@ public class LoginController {
 			stage.close();
 				
 			MainController controller = new MainController();
-			controller.showMainDialog();
+			controller.showDialog();
 			
 		} catch(RuntimeException e) {
+			LOGGER.info(e.getMessage());
+			
 			loginLogField.setText("User not found");
 			passwordLogField.setText("Try again");
 		}
 		
 	}
 	
+	
+	/**
+	 * This method sent request to open Registration form and close current form
+	 * 
+	 * @param actionEvent
+	 */
 	public void openRegistrationForm(ActionEvent actionEvent) {
 		Stage stage = (Stage)registrationFormButton.getScene().getWindow();
 		stage.close();
@@ -72,18 +86,46 @@ public class LoginController {
 	}
 	
 
-	public void initDialog() {
+	/**
+	 * This method initializing the login form
+	 */
+	public void showDialog() {
 		Stage stage = new Stage();
 		BorderPane root;
+		
 		try {
 			root = (BorderPane)FXMLLoader.load(getClass().getClassLoader().getResource("fxmls/Login.fxml"));
 			Scene scene = new Scene(root,275,160);
 			stage.setScene(scene);
 			stage.setTitle("BookChat Client");
 			stage.show();
+			
 		} catch (IOException e) {
-			e.printStackTrace();
+			LOGGER.info(e.getMessage());
 		}
+	}
+	
+	
+	/**
+	 * This method create new User object
+	 */
+	public static void initUser(String login, String password, String name, String email) {
+		user = User.newBuilder()
+			.setLogin(login)
+			.setPassword(password)
+			.setName(name)
+			.setEmail(email)
+			.build();
+	}
+	
+	
+	/**
+	 * This method return a name of user
+	 * 
+	 * @return name - String type data, contain name of user
+	 */
+	public static String getUserName() {
+		return user.getName();
 	}
 	
 }
