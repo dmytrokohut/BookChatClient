@@ -49,7 +49,7 @@ public class AddBookController {
 		
 		try {
 			root = (BorderPane)FXMLLoader.load(getClass().getClassLoader().getResource("fxmls/AddBook.fxml"));
-			Scene scene = new Scene(root,275,245);
+			Scene scene = new Scene(root,275,275);
 			stage.setScene(scene);
 			stage.setTitle("BookChat Client");
 			stage.show();
@@ -81,9 +81,6 @@ public class AddBookController {
 			if(response.getResponse().equals(ResponseEnum.SUCCESS)) {
 				Stage stage = (Stage)cancelAddBookButton.getScene().getWindow();
 				stage.close();
-				
-				MainController mainController = new MainController();
-				mainController.showDialog();
 			}			
 			
 		} catch(RuntimeException e) {

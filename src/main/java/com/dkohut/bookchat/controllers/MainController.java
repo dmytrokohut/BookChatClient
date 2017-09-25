@@ -70,9 +70,9 @@ public class MainController {
 						.usePlaintext(true)
 						.build();
 	
-	// Service connection's
-	ChatServiceGrpc.ChatServiceStub chatService = ChatServiceGrpc.newStub(CHANNEL);	
-	BookServiceGrpc.BookServiceBlockingStub bookService = BookServiceGrpc.newBlockingStub(CHANNEL);	
+	// Service connection's		
+	private BookServiceGrpc.BookServiceBlockingStub bookService = BookServiceGrpc.newBlockingStub(CHANNEL);	
+	private ChatServiceGrpc.ChatServiceStub chatService = ChatServiceGrpc.newStub(CHANNEL);
 	
 	private StreamObserver<ChatMessage> serverChat = chatService.chat(new StreamObserver<ChatMessageFromServer>() {
 
@@ -114,7 +114,9 @@ public class MainController {
 		serverChat.onNext(ChatMessage.newBuilder()
 				.setName(LoginController.getUserName())
 				.setMessage(messageField.getText())
-				.build());		
+				.build());	
+		
+		messageField.setText("");		
 		
 	}
 	

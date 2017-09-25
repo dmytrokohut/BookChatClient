@@ -65,8 +65,11 @@ public class LoginController {
 		} catch(RuntimeException e) {
 			LOGGER.info(e.getMessage());
 			
-			loginLogField.setText("User not found");
-			passwordLogField.setText("Try again");
+			loginLogField.setText("");
+			loginLogField.setPromptText("User not found");
+			
+			passwordLogField.setText("");
+			passwordLogField.setPromptText("Try again");
 		}
 		
 	}

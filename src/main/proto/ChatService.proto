@@ -19,5 +19,5 @@ message ChatMessageFromServer {
 
 service ChatService {
 	// Method that obtain and send mesage to the chat of each member
-	rpc chat(stream ChatMessage) returns (ChatMessageFromServer);
+	rpc chat(stream ChatMessage) returns (stream ChatMessageFromServer);
 }
